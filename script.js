@@ -1,22 +1,42 @@
 // script.js
-
+console.log("script")
 const img = new Image(); // used to load image from <input> and draw to canvas
-
 // Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
   // TODO
-
-
   // clear the canvas
-  const canvas = document.getElementById('canvas');
+  console.log("in load()");
+  const canvas = document.getElementById('user-image');
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  //returns a HTMLCollection list of buttons
+  var b_submit = document.querySelector("button[type=submit]");
+
+  var buttons = document.getElementById("button-group");
+  var b_reset = buttons.querySelector("button[type=reset]");
+  var b_button = buttons.querySelector("button[type=button]");
+
+  //var b = document.querySelector("button");
+
+  //when the button b is clicked
+  b_submit.onclick = function(){
+    b_reset.disabled = false;
+    b_button.disabled = false;
+  };
+
+
+  
+
   // color it black
-  ctx.beginPath();
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
+
+  // draw the uploaded image
+  var dim = getDimmensions(canvas.width, canvas.height, img.width, img.height);
+  console.log(dim);
+  ctx.drawImage(img, dim.startX, dim.startY, dim.width, dim.height);
+  console.log("Hey");
   
 
   // Some helpful tips:
@@ -25,6 +45,15 @@ img.addEventListener('load', () => {
   // - If you draw the image to canvas here, it will update as soon as a new image is selected
 
 });
+
+const image_input = document.getElementById('image-input');
+image_input.addEventListener('change', () => {
+  console.log("Image Triggered");
+  img.src = window.URL.createObjectURL(image_input.files[0]);
+  console.log("Img inputted");
+})
+
+
 
 /**
  * Takes in the dimensions of the canvas and the new image, then calculates the new
@@ -39,6 +68,7 @@ img.addEventListener('load', () => {
  */
 function getDimmensions(canvasWidth, canvasHeight, imageWidth, imageHeight) {
   let aspectRatio, height, width, startX, startY;
+  console.log(canvasWidth, canvasHeight, imageWidth, imageHeight);
 
   // Get the aspect ratio, used so the picture always fits inside the canvas
   aspectRatio = imageWidth / imageHeight;
