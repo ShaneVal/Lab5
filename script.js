@@ -1,10 +1,17 @@
 // script.js
-
+console.log("script");
 const img = new Image(); // used to load image from <input> and draw to canvas
 // Fires whenever the img object loads a new image (such as with img.src =)
 
+// canvas
 const canvas = document.getElementById('user-image');
 const ctx = canvas.getContext('2d');
+
+//buttons
+var buttons = document.getElementById("button-group");
+var b_reset = buttons.querySelector("button[type=reset]");
+var b_button = buttons.querySelector("button[type=button]");
+
 img.addEventListener('load', () => {
 
   // clear the canvas  
@@ -12,10 +19,6 @@ img.addEventListener('load', () => {
 
   //toggle the buttons
   var b_submit = document.querySelector("button[type=submit]");
-
-  var buttons = document.getElementById("button-group");
-  var b_reset = buttons.querySelector("button[type=reset]");
-  var b_button = buttons.querySelector("button[type=button]");
 
   //when the button b is clicked
   b_submit.onclick = function(){
@@ -41,6 +44,7 @@ img.addEventListener('load', () => {
 
 });
 
+
 const image_input = document.getElementById('image-input');
 image_input.addEventListener('change', () => {
 
@@ -50,9 +54,59 @@ image_input.addEventListener('change', () => {
   //set the alt text
   var file = image_input.files[0];
   img.alt = file.name;
-})
+});
+
 
 const sub = document.getElementById('generate-meme');
+sub.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const top_text = document.getElementById('text-top').value;
+  ctx.fillStyle = "white";
+  ctx.font = "small-caps bolder 25px arial";
+  ctx.textAlign = "center";
+  ctx.fillText(top_text, canvas.width/2, 20);
+
+  const bottom_text = document.getElementById('text-bottom').value;
+  ctx.fillStyle = "white";
+  ctx.font = "small-caps bolder 25px arial";
+  ctx.textAlign = "center";
+  ctx.fillText(bottom_text, canvas.width/2, canvas.height - 20);
+
+  //toggle relevant buttons upon click on submit?? DOUBT
+});
+
+
+b_reset.onclick = function(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+}
+
+b_button.onclick = function(){
+  const top_text = document.getElementById('text-top').value;
+  const bottom_text = document.getElementById('text-bottom').value;
+  let top_script = new SpeechSynthesisUtterance(top_text);
+  let bottom_script = new SpeechSynthesisUtterance(bottom_text);
+
+  // TODO set voices to the dropdown list
+  voices = speechSynthesis.getVoices();
+  speechSynthesis.speak(top_script);
+  speechSynthesis.speak(bottom_script);
+}
+// Q. If I type some text without uploading a picture, should it enable the clear and read buttons DOUBT
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
