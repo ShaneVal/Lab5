@@ -11,6 +11,7 @@ const ctx = canvas.getContext('2d');
 var buttons = document.getElementById("button-group");
 var b_reset = buttons.querySelector("button[type=reset]");
 var b_button = buttons.querySelector("button[type=button]");
+var b_submit = document.querySelector("button[type=submit]");
 
 img.addEventListener('load', () => {
 
@@ -18,7 +19,7 @@ img.addEventListener('load', () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   //toggle the buttons
-  var b_submit = document.querySelector("button[type=submit]");
+  
 
   //when the button b is clicked
   b_submit.onclick = function(){
@@ -56,7 +57,6 @@ image_input.addEventListener('change', () => {
   img.alt = file.name;
 });
 
-
 const sub = document.getElementById('generate-meme');
 sub.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -68,13 +68,19 @@ sub.addEventListener('submit', (e) => {
   ctx.fillText(top_text, canvas.width/2, 20);
 
   const bottom_text = document.getElementById('text-bottom').value;
-  ctx.fillStyle = "white";
-  ctx.font = "small-caps bolder 25px arial";
-  ctx.textAlign = "center";
-  ctx.fillText(bottom_text, canvas.width/2, canvas.height - 20);
+  //ctx.fillStyle = "white";
+  //ctx.font = "small-caps bolder 25px arial";
+  //ctx.textAlign = "center";
+  ctx.fillText(bottom_text, canvas.width/2, canvas.height - 10);
 
-  //toggle relevant buttons upon click on submit?? DOUBT
+  
+  b_submit.disabled = true;
+  b_reset.disabled = false;
+  b_button.disabled = false;
+
 });
+
+
 
 
 b_reset.onclick = function(){
@@ -89,7 +95,7 @@ b_button.onclick = function(){
   let bottom_script = new SpeechSynthesisUtterance(bottom_text);
 
   // TODO set voices to the dropdown list
-  voices = speechSynthesis.getVoices();
+  //voices = speechSynthesis.getVoices();
   speechSynthesis.speak(top_script);
   speechSynthesis.speak(bottom_script);
 }
