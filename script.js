@@ -1,7 +1,8 @@
 // script.js
 console.log("script");
-const img = new Image(); // used to load image from <input> and draw to canvas
-// Fires whenever the img object loads a new image (such as with img.src =)
+
+// used to load image from <input> and draw to canvas
+const img = new Image(); 
 
 // canvas
 const canvas = document.getElementById('user-image');
@@ -12,24 +13,19 @@ var buttons = document.getElementById("button-group");
 var b_reset = buttons.querySelector("button[type=reset]");
 var b_button = buttons.querySelector("button[type=button]");
 var b_submit = document.querySelector("button[type=submit]");
+var voices;
+var drop_down;
 
-
-
-function dropdownstuff(){
-
-  var voices = speechSynthesis.getVoices();
-  var drop_down = document.getElementById("voice-selection");
+function populateDropDown(){
+  voices = speechSynthesis.getVoices();
+  drop_down = document.getElementById("voice-selection");
   drop_down.disabled = false;
 
-  console.log("drop_down enabled: should be false", drop_down.disabled);
-  // TODO set voices to the dropdown list
-  
-  console.log("Array", voices);
-
+  // set voices to the dropdown list
   var default_voice;
 
   if (voices.length !== 0){
-    document.getElementById("voice-selection").remove(0);
+    drop_down.remove(0);
   }
   for(var i = 0; i < voices.length; i++) {
     var option = document.createElement('option');
@@ -44,25 +40,22 @@ function dropdownstuff(){
     option.setAttribute('data-name', voices[i].name);
     document.getElementById("voice-selection").appendChild(option);
   }
-  
 }
 
-dropdownstuff();
-console.log(speechSynthesis);
+// set the voices to the dropdown
+populateDropDown();
 speechSynthesis.onvoiceschanged = () => {
-  dropdownstuff();
+  populateDropDown();
 };
 
 
+// Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
 
   // clear the canvas  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  //toggle the buttons
-  //already done
-
-  //when the button b is clicked
+  //when the button b is clicked, toggle other buttons
   b_submit.onclick = function(){
     b_reset.disabled = false;
     b_button.disabled = false;
@@ -106,20 +99,20 @@ sub.addEventListener('submit', (e) => {
 
   const top_text = document.getElementById('text-top').value;
   ctx.fillStyle = "white";
-  ctx.font = "small-caps bolder 25px arial";
+  ctx.font = "small-caps bolder 25px Times New Roman";
   ctx.textAlign = "center";
   ctx.fillText(top_text, canvas.width/2, 20);
 
   const bottom_text = document.getElementById('text-bottom').value;
-  //ctx.fillStyle = "white";
-  //ctx.font = "small-caps bolder 25px arial";
-  //ctx.textAlign = "center";
+  
+  //fill the bottom text
   ctx.fillText(bottom_text, canvas.width/2, canvas.height - 10);
 
-  
+  // toggle relevant buttons
   b_submit.disabled = true;
   b_reset.disabled = false;
   b_button.disabled = false;
+
 
 });
 
@@ -128,6 +121,8 @@ b_reset.onclick = function(){
   b_submit.disabled = false;
   b_reset.disabled = true;
   b_button.disabled = true;
+  document.getElementById('image-input').value = "";
+
 }
 
 b_button.onclick = function(){
@@ -135,13 +130,47 @@ b_button.onclick = function(){
   const bottom_text = document.getElementById('text-bottom').value;
   let top_script = new SpeechSynthesisUtterance(top_text);
   let bottom_script = new SpeechSynthesisUtterance(bottom_text);
+
   
-  console.log("Vardhan", top_script, bottom_script);
+  // when a voice is selected from the drop down
+  var selectedOption = drop_down.selectedOptions[0].getAttribute('data-name');
+  for(var i = 0; i < voices.length ; i++) {
+    if(voices[i].name === selectedOption) {
+      top_script.voice = voices[i];
+      bottom_script.voice = voices[i];
+    }
+  }
+
+  var vol_group = document.getElementById("volume-group");
+  var image = vol_group.getElementsByTagName("img");
+  var volume_input = vol_group.getElementsByTagName("input");
+
+  console.log(volume_input[0]);
+  console.log(top_script.volume);
+  top_script.volume =  volume_input[0].value/100;
+  bottom_script.volume = volume_input[0].value/100;
+
+  
+  if (volume_input[0].value >= 67 && volume_input[0].value <= 100){
+    image[0].src = "icons/volume-level-3.svg";
+    image[0].alt = "Volume Level 3";
+  }
+  else if (volume_input[0].value >= 34 && volume_input[0].value <= 66) {
+    image[0].src = "icons/volume-level-2.svg";
+    image[0].alt = "Volume Level 2";
+  }
+  else if (volume_input[0].value >= 1 && volume_input[0].value <= 33) {
+    image[0].src = "icons/volume-level-1.svg";
+    image[0].alt = "Volume Level 1";
+  }
+  else if (volume_input[0].value == 0){
+    image[0].src = "icons/volume-level-0.svg";
+    image[0].alt = "Volume Level 0";
+  }
+
   speechSynthesis.speak(top_script);
   speechSynthesis.speak(bottom_script);
 }
-// Q. If I type some text without uploading a picture, should it enable the clear and read buttons DOUBT
-
 
 
 
