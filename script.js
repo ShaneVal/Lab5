@@ -69,11 +69,6 @@ img.addEventListener('load', () => {
   var dim = getDimmensions(canvas.width, canvas.height, img.width, img.height);
   ctx.drawImage(img, dim.startX, dim.startY, dim.width, dim.height);
 
-  
-
-  // TODO: clear the form when a new image is selected
-  
-
   // Some helpful tips:
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
   // - Clear the form when a new image is selected
@@ -145,8 +140,7 @@ b_button.onclick = function(){
   var image = vol_group.getElementsByTagName("img");
   var volume_input = vol_group.getElementsByTagName("input");
 
-  console.log(volume_input[0]);
-  console.log(top_script.volume);
+ 
   top_script.volume =  volume_input[0].value/100;
   bottom_script.volume = volume_input[0].value/100;
 
@@ -171,22 +165,6 @@ b_button.onclick = function(){
   speechSynthesis.speak(top_script);
   speechSynthesis.speak(bottom_script);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Takes in the dimensions of the canvas and the new image, then calculates the new
