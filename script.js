@@ -13,13 +13,54 @@ var b_reset = buttons.querySelector("button[type=reset]");
 var b_button = buttons.querySelector("button[type=button]");
 var b_submit = document.querySelector("button[type=submit]");
 
+
+
+function dropdownstuff(){
+
+  var voices = speechSynthesis.getVoices();
+  var drop_down = document.getElementById("voice-selection");
+  drop_down.disabled = false;
+
+  console.log("drop_down enabled: should be false", drop_down.disabled);
+  // TODO set voices to the dropdown list
+  
+  console.log("Array", voices);
+
+  var default_voice;
+
+  if (voices.length !== 0){
+    document.getElementById("voice-selection").remove(0);
+  }
+  for(var i = 0; i < voices.length; i++) {
+    var option = document.createElement('option');
+    option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+
+    if(voices[i].default) {
+      option.textContent += ' -- DEFAULT';
+      default_voice = voices[i].default;
+    }
+
+    option.setAttribute('data-lang', voices[i].lang);
+    option.setAttribute('data-name', voices[i].name);
+    document.getElementById("voice-selection").appendChild(option);
+  }
+  
+}
+
+dropdownstuff();
+console.log(speechSynthesis);
+speechSynthesis.onvoiceschanged = () => {
+  dropdownstuff();
+};
+
+
 img.addEventListener('load', () => {
 
   // clear the canvas  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   //toggle the buttons
-  
+  //already done
 
   //when the button b is clicked
   b_submit.onclick = function(){
@@ -34,6 +75,8 @@ img.addEventListener('load', () => {
   // draw the uploaded image
   var dim = getDimmensions(canvas.width, canvas.height, img.width, img.height);
   ctx.drawImage(img, dim.startX, dim.startY, dim.width, dim.height);
+
+  
 
   // TODO: clear the form when a new image is selected
   
@@ -80,12 +123,11 @@ sub.addEventListener('submit', (e) => {
 
 });
 
-
-
-
 b_reset.onclick = function(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+  b_submit.disabled = false;
+  b_reset.disabled = true;
+  b_button.disabled = true;
 }
 
 b_button.onclick = function(){
@@ -93,13 +135,14 @@ b_button.onclick = function(){
   const bottom_text = document.getElementById('text-bottom').value;
   let top_script = new SpeechSynthesisUtterance(top_text);
   let bottom_script = new SpeechSynthesisUtterance(bottom_text);
-
-  // TODO set voices to the dropdown list
-  //voices = speechSynthesis.getVoices();
+  
+  console.log("Vardhan", top_script, bottom_script);
   speechSynthesis.speak(top_script);
   speechSynthesis.speak(bottom_script);
 }
 // Q. If I type some text without uploading a picture, should it enable the clear and read buttons DOUBT
+
+
 
 
 
