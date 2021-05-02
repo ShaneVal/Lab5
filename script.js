@@ -1,5 +1,4 @@
 // script.js
-console.log("script");
 
 // used to load image from <input> and draw to canvas
 const img = new Image(); 
